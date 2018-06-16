@@ -8,7 +8,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class TasksApplication {
 
     public static void main(String[] args) {
-        TaskDto taskDto = new TaskDto((long) 2, "dadasd", "dsaad");
         SpringApplication.run(TasksApplication.class, args);
     }
 }
