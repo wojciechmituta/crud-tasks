@@ -12,11 +12,19 @@ public class DbService {
     @Autowired
     private TaskRepository repository;
 
-    public List<Task> getAllTasks(){
+    public List<Task> getAllTasks() {
         return repository.findAll();
     }
 
-    public Task getTaskById(final Long taskId){
-        return repository.findOne(taskId.longValue());
+    public Task getTaskById(final Long taskId) {
+        return repository.findOne(taskId);
+    }
+
+    public Task saveTask(final Task task) {
+        return repository.save(task);
+    }
+
+    public void deleteTask(final Long taskId) {
+        repository.delete(taskId);
     }
 }
