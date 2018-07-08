@@ -4,16 +4,15 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
-git@Getter
+@Getter
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Badges {
 
     @JsonProperty("votes")
     private int votes;
 
-    @JsonProperty("attachments")
+    @JsonProperty("attachmentsByType")
     private AttachmentsByType attachments;
 }
