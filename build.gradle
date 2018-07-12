@@ -30,7 +30,7 @@ dependencies {
     compile('org.postgresql:postgresql')
     compile('org.springframework.boot:spring-boot-starter-web')
     compile('org.springframework.boot:spring-boot-starter-data-jpa')
-    providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
+  //  providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
     compile('org.springframework.boot:spring-boot-starter-mail:1.5.7.RELEASE')
 
     //Swagger
