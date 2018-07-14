@@ -27,11 +27,12 @@ public class EmailScheduler {
         simpleEmailService.send(new Mail(adminConfig.getAdminMail(), SUBJECT, createMessage()));
     }
 
-    public String createMessage(){
+    public String createMessage() {
+        String MESSAGE = "Currently in database you got: ";
         long size = taskRepository.count();
-        if (size == 1){
-            return "Currently in database you got: " + size + " task";
+        if (size == 1) {
+            return MESSAGE + size + " task";
         }
-        return "Currently in database you got: " + size + " tasks";
+        return MESSAGE + size + " tasks";
     }
 }
