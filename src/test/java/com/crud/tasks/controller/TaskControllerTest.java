@@ -7,6 +7,7 @@ import com.crud.tasks.service.DbService;
 import com.google.gson.Gson;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatcher;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -21,10 +22,9 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -37,9 +37,6 @@ public class TaskControllerTest {
 
     @MockBean
     private DbService service;
-
-    @MockBean
-    private TaskMapper taskMapper;
 
     @MockBean
     TaskController taskController;
@@ -66,8 +63,8 @@ public class TaskControllerTest {
                 new TaskDto(1L, "test", "content"),
                 new TaskDto(2L, "test2", "content2"));
 
-        when(taskMapper.mapToTaskDtoList(taskList)).thenReturn(taskDtoList);
-        when(service.getAllTasks()).thenReturn(taskList);
+        when(taskController.getTasks()).thenReturn(taskDtoList);
+
         //When & Then
         mockMvc.perform(get("/v1/task/getTasks")
                 .contentType(MediaType.APPLICATION_JSON))
@@ -116,7 +113,8 @@ public class TaskControllerTest {
         TaskDto taskDto = new TaskDto(1L, "test", "content");
         TaskDto taskDtoUpdate = new TaskDto(1L, "test_update", "content_update");
 
-        when(taskController.updateTasks(taskDto)).thenReturn(taskDtoUpdate);
+        //  when(taskController.updateTasks(taskDto)).thenReturn(taskDtoUpdate);
+        when(taskController.updateTasks(any(TaskDto.class))).thenReturn(taskDtoUpdate);
 
         Gson gson = new Gson();
         String jsonContent = gson.toJson(taskDtoUpdate);
@@ -129,7 +127,23 @@ public class TaskControllerTest {
                 .content(jsonContent))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(1)))
-                .andExpect(jsonPath("$.title", is("test")))
-                .andExpect(jsonPath("$.content", is("content")));
+                .andExpect(jsonPath("$.title", is("test_update")))
+                .andExpect(jsonPath("$.content", is("content_update")));
+    }
+
+    @Test
+    public void testCreateTask() throws Exception {
+        //Given
+        TaskDto taskDto = new TaskDto(1L, "test", "content");
+
+        Gson gson = new Gson();
+        String jsonContent = gson.toJson(taskDto);
+
+        mockMvc.perform(post("/v1/task/createTask")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(jsonContent))
+                .andExpect(status().isOk());
+//W sumie chyba tutaj powinniśmy sprawdzić utworzone zadanie... tylko w jaki sposób jeżeli metoda jest typu void?
     }
 }
