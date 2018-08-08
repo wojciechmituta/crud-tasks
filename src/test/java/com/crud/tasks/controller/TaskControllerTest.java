@@ -7,8 +7,7 @@ import com.crud.tasks.service.DbService;
 import com.google.gson.Gson;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatcher;
-import org.mockito.Mockito;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -68,7 +67,7 @@ public class TaskControllerTest {
                 new TaskDto(2L, "test2", "content2"));
 
         when(service.getAllTasks()).thenReturn(taskList);
-        when(taskMapper.mapToTaskDtoList(taskList)).thenReturn(taskDtoList);
+        when(taskMapper.mapToTaskDtoList(any())).thenReturn(taskDtoList);
         //when(taskController.getTasks()).thenReturn(taskDtoList);
 
         //When & Then
@@ -90,7 +89,7 @@ public class TaskControllerTest {
         TaskDto taskDto = new TaskDto(1L, "test", "content");
         Task task = new Task(1L, "test", "content");
 
-        when(taskMapper.mapToTaskDto(any(Task.class))).thenReturn(taskDto);
+        when(taskMapper.mapToTaskDto(any())).thenReturn(taskDto);
         when(service.getTaskById(1L)).thenReturn(task);
 
         //When & Then
@@ -118,8 +117,13 @@ public class TaskControllerTest {
         TaskDto taskDto = new TaskDto(1L, "test", "content");
         TaskDto taskDtoUpdate = new TaskDto(1L, "test_update", "content_update");
 
-        when(taskController.updateTasks(taskDto)).thenReturn(taskDtoUpdate);
-        //when(taskController.updateTasks(any(TaskDto.class))).thenReturn(taskDtoUpdate);
+        Task task = new Task(1L, "test", "content");
+        Task taskUpdate = new Task(1L, "test_update", "content_update");
+
+
+        when(taskMapper.mapToTaskDto(any(Task.class))).thenReturn(taskDto);
+        when(taskMapper.mapToTask(any(TaskDto.class))).thenReturn(taskUpdate);
+        when(service.saveTask(any(Task.class))).thenReturn(taskUpdate);
 
         Gson gson = new Gson();
         String jsonContent = gson.toJson(taskDtoUpdate);
@@ -149,6 +153,5 @@ public class TaskControllerTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .content(jsonContent))
                 .andExpect(status().isOk());
-//W sumie chyba tutaj powinniśmy sprawdzić utworzone zadanie... tylko w jaki sposób jeżeli metoda jest typu void?
     }
 }
