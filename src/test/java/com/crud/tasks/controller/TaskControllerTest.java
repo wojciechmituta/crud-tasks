@@ -38,9 +38,6 @@ public class TaskControllerTest {
     private DbService service;
 
     @MockBean
-    TaskController taskController;
-
-    @MockBean
     TaskMapper taskMapper;
 
     @Test
@@ -68,7 +65,6 @@ public class TaskControllerTest {
 
         when(service.getAllTasks()).thenReturn(taskList);
         when(taskMapper.mapToTaskDtoList(any())).thenReturn(taskDtoList);
-        //when(taskController.getTasks()).thenReturn(taskDtoList);
 
         //When & Then
         mockMvc.perform(get("/v1/task/getTasks")
@@ -114,15 +110,13 @@ public class TaskControllerTest {
     @Test
     public void testUpdateTask() throws Exception {
         //Given
-        TaskDto taskDto = new TaskDto(1L, "test", "content");
         TaskDto taskDtoUpdate = new TaskDto(1L, "test_update", "content_update");
 
         Task task = new Task(1L, "test", "content");
         Task taskUpdate = new Task(1L, "test_update", "content_update");
 
-
-        when(taskMapper.mapToTaskDto(any(Task.class))).thenReturn(taskDto);
-        when(taskMapper.mapToTask(any(TaskDto.class))).thenReturn(taskUpdate);
+        when(taskMapper.mapToTaskDto(any(Task.class))).thenReturn(taskDtoUpdate);
+        when(taskMapper.mapToTask(any(TaskDto.class))).thenReturn(task);
         when(service.saveTask(any(Task.class))).thenReturn(taskUpdate);
 
         Gson gson = new Gson();
