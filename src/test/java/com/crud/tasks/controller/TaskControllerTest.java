@@ -41,10 +41,14 @@ public class TaskControllerTest {
     @MockBean
     TaskController taskController;
 
+    @MockBean
+    TaskMapper taskMapper;
+
     @Test
     public void shouldFetchEmptyTasksLists() throws Exception {
         //Given
         List<Task> taskList = new ArrayList<>();
+
         when(service.getAllTasks()).thenReturn(taskList);
         //When & Then
         mockMvc.perform(get("/v1/task/getTasks")
@@ -63,7 +67,9 @@ public class TaskControllerTest {
                 new TaskDto(1L, "test", "content"),
                 new TaskDto(2L, "test2", "content2"));
 
-        when(taskController.getTasks()).thenReturn(taskDtoList);
+        when(service.getAllTasks()).thenReturn(taskList);
+        when(taskMapper.mapToTaskDtoList(taskList)).thenReturn(taskDtoList);
+        //when(taskController.getTasks()).thenReturn(taskDtoList);
 
         //When & Then
         mockMvc.perform(get("/v1/task/getTasks")
@@ -82,16 +88,15 @@ public class TaskControllerTest {
     public void testGetTaskById() throws Exception {
         //Given
         TaskDto taskDto = new TaskDto(1L, "test", "content");
+        Task task = new Task(1L, "test", "content");
 
-        when(taskController.getTask(1L)).thenReturn(taskDto);
+        when(taskMapper.mapToTaskDto(any(Task.class))).thenReturn(taskDto);
+        when(service.getTaskById(1L)).thenReturn(task);
 
-        Gson gson = new Gson();
-        String jsonContent = gson.toJson(taskDto);
         //When & Then
         mockMvc.perform(get("/v1/task/getTask?taskId=1")
                 .contentType(MediaType.APPLICATION_JSON)
-                .characterEncoding("UTF-8")
-                .content(jsonContent))
+                .characterEncoding("UTF-8"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.title", is("test")))
@@ -99,7 +104,7 @@ public class TaskControllerTest {
     }
 
     @Test
-    public void testDeleteTask() throws Exception {
+    public void shouldDeleteTask() throws Exception {
         //Given & When & Then
         mockMvc.perform(delete("/v1/task/deleteTask?taskId=1")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -113,8 +118,8 @@ public class TaskControllerTest {
         TaskDto taskDto = new TaskDto(1L, "test", "content");
         TaskDto taskDtoUpdate = new TaskDto(1L, "test_update", "content_update");
 
-        //  when(taskController.updateTasks(taskDto)).thenReturn(taskDtoUpdate);
-        when(taskController.updateTasks(any(TaskDto.class))).thenReturn(taskDtoUpdate);
+        when(taskController.updateTasks(taskDto)).thenReturn(taskDtoUpdate);
+        //when(taskController.updateTasks(any(TaskDto.class))).thenReturn(taskDtoUpdate);
 
         Gson gson = new Gson();
         String jsonContent = gson.toJson(taskDtoUpdate);
