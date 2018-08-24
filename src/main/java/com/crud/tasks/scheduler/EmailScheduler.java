@@ -22,10 +22,10 @@ public class EmailScheduler {
 
     private static final String SUBJECT = "Tasks: Once a day email";
 
-    @Scheduled(fixedDelay = 10000)
-    public void sendInformationEmail() {
-        simpleEmailService.send(new Mail(adminConfig.getAdminMail(), SUBJECT, createMessage()));
-    }
+//    @Scheduled(fixedDelay = 10000)
+  //  public void sendInformationEmail() {
+    //    simpleEmailService.send(new Mail(adminConfig.getAdminMail(), SUBJECT, createMessage()));
+    //}
 
     public String createMessage() {
         String MESSAGE = "Currently in database you got: ";
